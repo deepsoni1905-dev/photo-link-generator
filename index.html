@@ -1,204 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tirth Enterprises - Photo Link Generator</title>
+  <title>NYK Photo Link Generator</title>
 
-<style>
-* {
-    box-sizing: border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
 
-.container {
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 20px;
-}
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+    }
 
-.card {
-    background: white;
-    padding: 25px;
-    border-radius: 18px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
-}
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.10);
+    }
 
-h1 {
-    text-align: center;
-    margin-bottom: 5px;
-}
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
 
-.subtitle {
-    text-align: center;
-    color: #777;
-    margin-bottom: 25px;
-}
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
 
-input[type="file"] {
-    width: 100%;
-    padding: 14px;
-    border: 2px dashed #aaa;
-    border-radius: 12px;
-    background: #fafafa;
-}
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fafafa;
+    }
 
-button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.upload-btn {
-    background: #111;
-    color: white;
-}
+    button:disabled {
+      background: #999;
+    }
 
-.copy-btn {
-    background: #16803c;
-    color: white;
-}
+    #preview {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      margin-top: 20px;
+      border-radius: 12px;
+      display: none;
+    }
 
-.clear-btn {
-    background: #e9e9e9;
-    color: #222;
-}
+    #status {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
 
-#status {
-    text-align: center;
-    margin-top: 15px;
-    font-weight: bold;
-}
+    .link-box {
+      display: none;
+      margin-top: 20px;
+    }
 
-#preview {
-    width: 100%;
-    max-height: 350px;
-    object-fit: contain;
-    margin-top: 20px;
-    border-radius: 12px;
-    display: none;
-}
+    .link-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
 
-.link-box {
-    margin-top: 20px;
-    display: none;
-}
+    .copy-btn {
+      background: #16a34a;
+    }
 
-.link-box input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 13px;
-}
+    .success {
+      color: #16a34a;
+    }
 
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    color: #888;
-    font-size: 13px;
-}
-</style>
+    .error {
+      color: #dc2626;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
+    <div class="card">
 
-<div class="card">
+      <h1>📷 NYK Photo Link Generator</h1>
 
-<h1>TIRTH ENTERPRISES</h1>
+      <p class="subtitle">
+        Upload a photo and generate a direct link
+      </p>
 
-<div class="subtitle">
-PHOTO LINK GENERATOR
-</div>
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/*"
+      >
 
-<input
-    type="file"
-    id="photo"
-    accept="image/jpeg,image/png,image/webp"
->
+      <img id="preview" alt="Photo Preview">
 
-<button class="upload-btn" onclick="uploadPhoto()">
-    UPLOAD PHOTO & GENERATE LINK
-</button>
+      <button id="uploadBtn">
+        Upload Photo
+      </button>
 
-<div id="status"></div>
+      <div id="status"></div>
 
-<img id="preview">
+      <div class="link-box" id="linkBox">
 
-<div class="link-box" id="linkBox">
+        <input
+          type="text"
+          id="imageLink"
+          readonly
+        >
 
-<input
-    type="text"
-    id="photoLink"
-    readonly
->
+        <button class="copy-btn" id="copyBtn">
+          📋 Copy Photo Link
+        </button>
 
-<button class="copy-btn" onclick="copyLink()">
-    COPY LINK
-</button>
+      </div>
 
-<button class="clear-btn" onclick="clearPhoto()">
-    CLEAR
-</button>
+    </div>
+  </div>
 
-</div>
+  <script>
 
-</div>
+    // Cloudinary settings
+    const CLOUD_NAME = "k8yag9mo";
+    const UPLOAD_PRESET = "Nayak_photos";
 
-<div class="footer">
-Tirth Enterprises © 2026
-</div>
-
-</div>
-
-
-<script>
-
-const CLOUD_NAME = "k8yag9mo";
-const UPLOAD_PRESET = "Nayak_photos";
-
-
-async function uploadPhoto() {
-
-    const fileInput = document.getElementById("photo");
-    const status = document.getElementById("status");
+    const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
     const preview = document.getElementById("preview");
+    const status = document.getElementById("status");
     const linkBox = document.getElementById("linkBox");
-    const photoLink = document.getElementById("photoLink");
+    const imageLink = document.getElementById("imageLink");
+    const copyBtn = document.getElementById("copyBtn");
 
-    if (!fileInput.files.length) {
+    // Show preview
+    fileInput.addEventListener("change", function () {
 
-        status.innerHTML = "Please select a photo first.";
+      const file = this.files[0];
+
+      if (!file) {
+        preview.style.display = "none";
         return;
-    }
+      }
 
-    const file = fileInput.files[0];
-
-    if (file.size > 10 * 1024 * 1024) {
-
-        status.innerHTML = "Photo must be smaller than 10 MB.";
+      if (!file.type.startsWith("image/")) {
+        status.textContent = "Please select an image.";
+        status.className = "error";
         return;
-    }
+      }
 
-    status.innerHTML = "Uploading photo...";
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
 
-    const formData = new FormData();
+      status.textContent = "";
+      linkBox.style.display = "none";
+    });
 
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
+    // Upload photo
+    uploadBtn.addEventListener("click", async function () {
 
-    try
+      const file = fileInput.files[0];
+
+      if (!file) {
+        status.textContent = "Please select a photo first.";
+        status.className = "error";
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = "Uploading...";
+      status.textContent = "Uploading photo...";
+      status.className = "";
+
+      const formData = new FormData();
+
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      try {
+
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error?.message || "Upload failed");
+        }
+
+        // Cloudinary secure URL
+        const photoURL = data.secure_url;
+
+        imageLink.value = photoURL;
+        linkBox.style.display = "block";
+
+        status.textContent = "✅ Photo uploaded successfully!";
+        status.className = "success";
+
+      } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "❌ Upload failed: " + error.message;
+
+        status.className = "error";
+
+      } finally {
+
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Upload Photo";
+
+      }
+
+    });
+
+    // Copy link
+    copyBtn.addEventListener("click", async function () {
+
+      try {
+
+        await navigator.clipboard.writeText(imageLink.value);
+
+        copyBtn.textContent = "✅ Link Copied!";
+
+        setTimeout(() => {
+          copyBtn.textContent = "📋 Copy Photo Link";
+        }, 2000);
+
+      } catch (error) {
+
+        imageLink.select();
+        document.execCommand("copy");
+
+        copyBtn.textContent = "✅ Link Copied!";
+
+        setTimeout(() => {
+          copyBtn.textContent = "📋 Copy Photo Link";
+        }, 2000);
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
